@@ -1,7 +1,7 @@
 const Discord = require('discord.js'); // importing the package to interact with discord
 
 require('dotenv').config() //setting env variables for the proj
-require("./backend/connectTODB"); // conn to the database
+require("./backend/connectToDB"); // conn to the database
 const utlModel = require('./backend/schema/user.model') // using db schema 
 
 
