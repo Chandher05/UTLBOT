@@ -14,7 +14,7 @@ function newUser(discordid, username, ) {
 
 const DbHandler = async (discordid, name, msg) => {
     let userData = await utlModel.find({
-        discordID: 123
+        discordID: discordid
     }).exec();
     if (!userData) {
         newUser(discordid, name)
@@ -37,6 +37,34 @@ const DbHandler = async (discordid, name, msg) => {
         }, {
             $set: {
                 'currReading.pages': parseInt(msg.substring(6))
+            }
+
+        }))
+    } else if (msg.startsWith(`${process.env.BOT_PREFIX} tbr`)) { // UTL tbr 
+        // the bot command - UTL tbr *Book Name* and *Author name*
+        let bookDetails = msg.substring(8).split(' by '); // getting the author and the book
+        console.log(await utlModel.findOneAndUpdate({
+            discordID: discordid
+        }, {
+            $push: {
+                toreadList: {
+                    name: bookDetails[0],
+                    author: bookDetails[1]
+                }
+            }
+
+        }))
+    } else if (msg.startsWith(`${process.env.BOT_PREFIX} fin`)) { // UTL tbr 
+        // the bot command - UTL tbr *Book Name* and *Author name*
+        let bookDetails = msg.substring(8).split(' by '); // getting the author and the book
+        console.log(await utlModel.findOneAndUpdate({
+            discordID: discordid
+        }, {
+            $push: {
+                readList: {
+                    name: bookDetails[0],
+                    author: bookDetails[1]
+                }
             }
 
         }))
