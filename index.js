@@ -3,22 +3,28 @@ const Discord = require('discord.js'); // importing the package to interact with
 require('dotenv').config() //setting env variables for the proj
 require("./backend/connectToDB"); // conn to the database
 const utlModel = require('./backend/schema/user.model') // using db schema 
+const bot = new Discord.Client();
+bot.once('ready', () => {
+    console.log('The bot is ready');
+});
 
-
-function newUser(discordid, username, ) {
+async function newUser(discordid, username) {
     const entry = new utlModel();
     entry.username = username
     entry.discordID = discordid
-    entry.save()
+    await entry.save()
+    console.log('****New user******')
 }
 
 const DbHandler = async (discordid, name, msg) => {
-    let userData = await utlModel.find({
+    let userData = await utlModel.findOne({
         discordID: discordid
     }).exec();
+    console.log(userData)
     if (!userData) {
-        newUser(discordid, name)
+        await newUser(discordid, name)
     }
+
     if (msg.startsWith(`${process.env.BOT_PREFIX} add`)) {
         console.log(await utlModel.findOneAndUpdate({
             discordID: discordid
@@ -72,10 +78,6 @@ const DbHandler = async (discordid, name, msg) => {
 }
 
 
-const bot = new Discord.Client();
-bot.once('ready', () => {
-    console.log('The bot is ready');
-});
 
 bot.on('message', message => {
     if (message.content.startsWith(`${process.env.BOT_PREFIX}`)) {
